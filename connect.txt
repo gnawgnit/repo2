@@ -30,3 +30,6 @@ world
 hello
 world
 
+按:q!进入编辑区
+what
+
