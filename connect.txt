@@ -3,3 +3,5 @@ hello i am gnawgnit
 
 按:q!进入编辑区
 what I am wangting
+按:q!进入编辑区
+ok
