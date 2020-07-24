@@ -15,12 +15,6 @@
 #define SUCC 0
 #define PERMIT (6) //允许尝试六次
 #define STRSIZE 20
-#define MENUSTRSIZE 10  //登录页面
-#define MENUSIZE 3
-#define MENUSTRSIZE1 45  //功能页面
-#define MENUSIZE1 5
-#define MENUSTRSIZE2 40  //查找页面
-#define MENUSIZE2 3
 #define BACKSPACE 127   //删除的asccll码值
 /*-------------------------*/
 
@@ -88,17 +82,13 @@ void show_tele(Node **linkp);
 //辅助函数-> 用于接受输入，剔除\n
 char *s_fgets(char *val, int n);
 
-//输出菜单
-int menu(void);
-int menu1(void);
-int menu2(void);
 
 //辅助函数 ->用于确定sign*的位置
-int findsign(char menustr[MENUSIZE][MENUSTRSIZE]);
-int findsign1(char menustr[MENUSIZE1][MENUSTRSIZE1]);
-int findsign2(char menustr[MENUSIZE2][MENUSTRSIZE2]);
+int findsign(char *, int);
+int menu(char *menustr, int strsize);
 /*----------------------------------*/
 int Pre(Node **linkp, char *name);
 int preadd_tele(Node **linkp, char *namecell, char *numbercell, char *timecell);
 int Lastprin(Node **linkp, char *name);
+
 #endif

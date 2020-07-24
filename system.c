@@ -202,65 +202,6 @@ int Signup(char *name){  //name[NAME_SIZE] 主函数传递
 	}
 	return pass;
 }
-/*int menu(void){
-	int id;//功能id
-	puts(" **欢迎进入gnawgnit创建的系统**\n **输入功能号：		     **\n **   1）注册                **\n **   2）登录                **\n **   3）退出                **\n ******************************");
-	scanf("%d", &id);
-	while(getchar()!='\n')
-		continue;
-	return id;
-}*/
-int menu(void){
-	char menustr[MENUSIZE][MENUSTRSIZE] = {"* 注册", "  登陆", "  退出"};
-	int value;
-	int ch;
-		while(1){
-		for(int i = 0;i<MENUSIZE;i++)
-		printf("%s\n", menustr[i]);
-		
-		system("stty -icanon");
-		system("stty -echo");
-		ch = getchar();
-		//找到*号的位置 int value
-		value = findsign(menustr);
-		//上箭头
-		if(ch == 'w'||ch == '\042'){
-			menustr[value][0] = ' ';
-			if(--value == -1)//第一个位置
-				value = MENUSIZE - 1;
-			menustr[value][0] = '*';
-			system("clear");
-		}
-		//下箭头
-		else if(ch == 's'||ch == '\041'){
-			menustr[value][0] = ' ';
-			if(++value == MENUSIZE)//最后一个位置
-				value = 0;
-			menustr[value][0] = '*';
-			system("clear");
-		}
-		//回车键
-		else if(ch == 'e'||ch == '\015'){
-			system("stty echo");
-			system("stty echo");
-			return value+1;
-		}
-		//其他
-		else
-			;
-		system("stty icanon");
-		system("stty icanon");
-	}
-}
-int findsign(char menustr[MENUSIZE][MENUSTRSIZE]){
-	int rev = 0;//默认位置
-	while(rev < MENUSIZE){
-		if(menustr[rev][0] == '*'){
-			return rev;
-		}
-		rev++;
-	}
-}
 int Authen_name(char *name, char *passwd){
 	char nametmp[STRSIZE];
 	char passwdtmp[STRSIZE];
@@ -332,7 +273,7 @@ int add_tele(Node **linkp){
 	s_fgets(new_tele->tele_message.tele_number, NUMBER_SIZE);
 	//当前时间
 	time_t time_now = time(0);
-	strftime(new_tele->tele_message.tele_time, sizeof(new_tele->tele_message.tele_time),"%Y/%m/%d %X %A",localtime(&time_now));
+	strftime(new_tele->tele_message.tele_time, sizeof(new_tele->tele_message.tele_time),"%Y/%m/%d.%X.%A",localtime(&time_now));
 
 	new_tele->next = current_tele;
 	*temp_linkp = new_tele;
@@ -349,7 +290,8 @@ int find_tele(Node **linkp){
 	puts("查找方式：");
 	//menu()
 	//puts("1.全名查找\n2.名字首字母查找\n0.返回");
-	int id = menu2();
+	char menustr2[60]={"* 全名查找\n  名字首字母查找\n  返回\n"};
+	int id = menu(menustr2, 3);
 	if(id == 1){
 		printf("输入全名：");
 		char temp_name[NAME_SIZE];
@@ -454,106 +396,73 @@ void show_tele(Node **linkp){
 }
 
 /*--------------------------------------------------------------*/
-int menu1(void){
-	char menustr[MENUSIZE1][MENUSTRSIZE1]={"* 添加电话簿记录","  显示电话簿内容", "  根据姓名查找电话簿数据","  根据姓名删除电话簿数据","  退出系统"};
+int findsign(char *menustr, int strsize){
+	int rev = 0;
+	while(menustr[rev] != '*')
+		rev++;
+	return rev;
+}
+int menu(char *menustr, int strsize){
+
+	int Len = strlen(menustr);
+	char ch;
 	int value;
-	int ch;
-		while(1){
-		system("clear");
-		puts("欢迎进入电话簿数据系统");
-		for(int i = 0;i<MENUSIZE1;i++)
-			printf("%s\n", menustr[i]);
-		system("stty -icanon");
-		system("stty -echo");
-		ch = getchar();
-		//找到*号的位置 int value
-		value = findsign1(menustr);
-		//上箭头
-		if(ch == 'w'){
-			menustr[value][0] = ' ';
-			if(--value == -1)//第一个位置
-				value = MENUSIZE1 - 1;
-			menustr[value][0] = '*';
-		}
-		//下箭头
-		else if(ch == 's'){
-			menustr[value][0] = ' ';
-			if(++value == MENUSIZE1)//最后一个位置
-				value = 0;
-			menustr[value][0] = '*';
-		}
-		//回车键
-		else if(ch == 'e'){
-			system("stty icanon");
-			system("stty echo");
-			return value+1;
-		}
-		//其他
+	while(1){
+	system("clear");
+	printf("%s", menustr);
+	value = findsign(menustr, Len);
+
+//向上
+	system("stty -icanon");
+	system("stty -echo");
+	ch = getchar();
+	if(ch == 'w' || ch == 'W'){
+		menustr[value] = ' ';
+
+		//处理特殊位置
+		if(value == 0)
+			value = Len;
+		value = value-2;//越过换行符
+		while(menustr[value]!='\n'&& value != 0)
+			value--;
+		if(value == 0)
+			menustr[value] = '*';
 		else
-			;
+			menustr[value+1] = '*';
+		system("clear");
+	}
+	else if(ch == 'e'||ch == 'E'){
 		system("stty icanon");
 		system("stty echo");
-	}
-}
-int findsign1(char menustr[MENUSIZE1][MENUSTRSIZE1]){
-	int rev = 0;//默认位置
-	while(rev < MENUSIZE1){
-		if(menustr[rev][0] == '*'){
-			return rev;
+		//数*前有几个\n来确定功能号
+		int i = 0;
+		int rev = 0;
+		while(menustr[i] != '*'){
+			if(menustr[i++] == '\n')
+					rev++;
+			else
+				;
 		}
-		rev++;
+		return rev+1;//返回功能号
 	}
-}
-int menu2(void){
-	//puts("1.全名查找\n2.名字首字母查找\n0.返回");
-	char menustr[MENUSIZE2][MENUSTRSIZE2]={"* 全名查找", "  名字首字母查找", "  返回"};
-	int value;
-	int ch;
-		while(1){
+	else if(ch == 's'||ch == 'S'){
+		menustr[value] = ' ';
+		while(menustr[value] != '\n')
+			value++;
+		value++;
+		if(menustr[value] == '\0')
+			value = 0;
+		menustr[value] = '*';
 		system("clear");
-		for(int i = 0;i<MENUSIZE2;i++)
-			printf("%s\n", menustr[i]);
-		system("stty -icanon");
-		system("stty -echo");
-		ch = getchar();
-		//找到*号的位置 int value
-		value = findsign2(menustr);
-		//上箭头
-		if(ch == 'w'){
-			menustr[value][0] = ' ';
-			if(--value == -1)//第一个位置
-				value = MENUSIZE2 - 1;
-			menustr[value][0] = '*';
+
 		}
-		//下箭头
-		else if(ch == 's'){
-			menustr[value][0] = ' ';
-			if(++value == MENUSIZE2)//最后一个位置
-				value = 0;
-			menustr[value][0] = '*';
-		}
-		//回车键
-		else if(ch == 'e'){
-			system("stty icanon");
-			system("stty echo");
-			return value+1;
-		}
-		//其他
-		else
-			;
-		system("stty icanon");
-		system("stty echo");
+	else
+		;
+	system("stty icanon");
+	system("stty echo");
 	}
 }
-int findsign2(char menustr[MENUSIZE2][MENUSTRSIZE2]){
-	int rev = 0;//默认位置
-	while(rev < MENUSIZE2){
-		if(menustr[rev][0] == '*'){
-			return rev;
-		}
-		rev++;
-	}
-}
+
 /*----------------------------------------------------------------------*/
 //打开文件，读取内容到链表
 //形成数据文件名
