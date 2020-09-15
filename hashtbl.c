@@ -47,14 +47,14 @@ HashTable InitializeTable(int TableSize){
 		Error("Out of space");
 		return NULL;
 	}
-
-	/*H->TheLists = malloc(sizeof(struct ListNode)*H->TableSize);
-	for(i = 0;i < H->TableSize;i++){
-		if(H->TheLists == NULL){
+	
+	/*
+	H->TheLists = malloc(sizeof(struct ListNode)*H->TableSize);
+	 if(H->TheLists == NULL){
 			Error("Out of space");
 			return NULL;
 		}
-		else
+	for(i = 0;i < H->TableSize;i++){
 			H->TheLists[i]->Next = NULL;
 	}
 	
@@ -68,6 +68,7 @@ HashTable InitializeTable(int TableSize){
 		else
 			H->TheLists[i]->Next = NULL;
 	}
+	
 	return  H;
 }
 void DestoryList(List L){
